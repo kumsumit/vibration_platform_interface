@@ -18,7 +18,7 @@ class MethodChannelVibration extends VibrationPlatform {
   /// }
   /// ```
   @override
-  Future<bool?> hasVibrator() async {
+  Future<bool> hasVibrator() async {
     try {
       if (Platform.isAndroid) {
         final deviceData = await deviceInfo.androidInfo;
@@ -54,7 +54,7 @@ class MethodChannelVibration extends VibrationPlatform {
   /// }
   /// ```
   @override
-  Future<bool?> hasAmplitudeControl() async {
+  Future<bool> hasAmplitudeControl() async {
     try {
       if (Platform.isAndroid) {
         final deviceData = await deviceInfo.androidInfo;
@@ -63,7 +63,7 @@ class MethodChannelVibration extends VibrationPlatform {
           return false;
         }
 
-        return _channel.invokeMethod("hasAmplitudeControl");
+        return await _channel.invokeMethod("hasAmplitudeControl") ?? false;
       } else if (Platform.isIOS) {
         final deviceData = await deviceInfo.iosInfo;
 
@@ -96,9 +96,9 @@ class MethodChannelVibration extends VibrationPlatform {
   /// }
   /// ```
   @override
-  Future<bool?> hasCustomVibrationsSupport() async {
+  Future<bool> hasCustomVibrationsSupport() async {
     try {
-      return await _channel.invokeMethod("hasCustomVibrationsSupport");
+      return await _channel.invokeMethod("hasCustomVibrationsSupport") ?? false;
     } on MissingPluginException {
       return Future.value(false);
     }
@@ -124,6 +124,7 @@ class MethodChannelVibration extends VibrationPlatform {
     int repeat = -1,
     List<int> intensities = const [],
     int amplitude = -1,
+    double sharpness = 0.5,
   }) =>
       _channel.invokeMethod(
         "vibrate",
@@ -133,6 +134,7 @@ class MethodChannelVibration extends VibrationPlatform {
           "repeat": repeat,
           "amplitude": amplitude,
           "intensities": intensities,
+          "sharpness": sharpness,
         },
       );
 
